@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoplay Instant Video</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .video-card {
+            width: 100%;
+            max-width: 800px;
+            background: #1e293b;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+        }
+
+        video {
+            width: 100%;
+            display: block;
+        }
+
+        .sound-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .controls-hint {
+            padding: 15px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="video-card">
+        <div class="video-container" id="videoBox">
+            <span class="sound-badge" id="soundBadge">🔇 Sentuh / dekatkan kursor untuk suara</span>
+            
+            <!-- Atribut wajib agar langsung PLAY saat dibuka: autoplay muted playsinline -->
+            <video id="myVideo" autoplay muted playsinline loop controls>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                Browser Anda tidak mendukung pemutaran video.
+            </video>
+        </div>
+        <p class="controls-hint">Video diputar otomatis seketika saat halaman dibuka.</p>
+    </div>
+
+    <script>
+        const video = document.getElementById('myVideo');
+        const soundBadge = document.getElementById('soundBadge');
+        const videoBox = document.getElementById('videoBox');
+
+        // Memastikan video terputar seketika saat halaman selesai dimuat
+        window.addEventListener('load', () => {
+            video.play().catch(error => {
+                console.log("Autoplay diblokir:", error);
+            });
+        });
+
+        // Menyalakan suara ketika pengguna menyentuh layar atau mengarahkan kursor
+        function enableAudio() {
+            if (video.muted) {
+                video.muted = false;
+                soundBadge.textContent = "🔊 Suara Aktif";
+                soundBadge.style.backgroundColor = "rgba(34, 197, 94, 0.85)";
+                setTimeout(() => {
+                    soundBadge.style.opacity = "0";
+                }, 2000);
+            }
+        }
+
+        videoBox.addEventListener('mouseenter', enableAudio);
+        videoBox.addEventListener('touchstart', enableAudio, { passive: true });
+        videoBox.addEventListener('click', enableAudio);
+    </script>
+
+</body>
+</html>
